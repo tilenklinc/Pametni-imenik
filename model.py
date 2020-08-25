@@ -111,3 +111,87 @@ class Povezava:
     def del_contact(self, index):
         self.data.pop(index)
     
+    def sort_priimki(self):
+        '''Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so priimki urejeni po abecedi'''
+        if self.data == {}:
+            pass
+        seznam_parov = [] # seznam parov [('novak', 1), ('lokar', 2), ('', 3), ('48', 4)]
+        for i in self.data:
+            priimek = self.data[i]['priimek']
+            seznam_parov.append((priimek.upper(), i))
+        pari = sorted(seznam_parov) # seznam uredimo po abecedi [('', 3), ('48', 4), ('lokar', 2), ('novak', 1)]
+        slovar = {}
+        for  n, (priimek, index) in enumerate(pari):
+            slovar[str(n + 1)] = self.data[index]
+            self.data.pop(index)
+        self.data = slovar
+
+    def sort_ime(self):
+        '''Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so imena urejena po abecedi'''
+        if self.data == {}:
+            pass
+        seznam_parov = []
+        for i in self.data:
+            ime = self.data[i]['ime']
+            seznam_parov.append((ime.upper(), i))
+        pari = sorted(seznam_parov)
+        slovar = {}
+        for  n, (ime, index) in enumerate(pari):
+            slovar[str(n + 1)] = self.data[index]
+            self.data.pop(index)
+        self.data = slovar
+
+    def stevilke_imenik(self):
+        return [self.data[i]['stevilka'] for i in self.data.keys()]
+
+    def priimki_imenik(self):
+        return [self.data[i]['priimek'] for i in self.data.keys()]
+
+    def imena_imenik(self):
+        return [self.data[i]['ime'] for i in self.data.keys()]
+    
+    def kontakti_priimek(self, priimek):
+        '''Vrne slovar vseh kontaktov, ki imajo tak priimek'''
+        if priimek == '':
+            return self.data
+        else:
+            slovar = {}
+            for i in self.data:
+                if self.data[i]['priimek'].upper() == priimek:
+                    slovar[i] = self.data[i]
+            return slovar
+
+    def kontakti_ime(self, ime, slovar):
+        '''Vrne slovar vseh kontaktov, ki imajo tako ime (in priimek od prej)'''
+        if ime == '':
+            return slovar
+        else:
+            slovar2 = {}
+            for i in slovar:
+                if slovar[i]['ime'].upper() == ime:
+                    slovar2[i] = slovar[i]
+            return slovar2
+    
+    def ali_je_prazen(self, slovar):
+        if slovar == {}:
+            return NO_CONTACT
+        else:
+            return slovar
+
+    def poisci_kontakt(self, priimek, ime, stevilka):
+        '''Poisce slovar z vsemi kontakti, ki ustrezajo danim argumentom'''
+        if priimek + ime + stevilka == '':
+            return EMPTY
+        ime = ime.upper()
+        priimek = priimek.upper()
+        kontakti_s_tem_priimkom = self.kontakti_priimek(priimek)
+        kontakti_s_tem_priimkom_in_imenom = self.kontakti_ime(ime, kontakti_s_tem_priimkom)
+        if stevilka == '':
+            return self.ali_je_prazen(kontakti_s_tem_priimkom_in_imenom)
+        else:
+            slovar = {}
+            for i in kontakti_s_tem_priimkom_in_imenom:
+                if kontakti_s_tem_priimkom_in_imenom[i]['stevilka'] == stevilka:
+                    slovar[i] = kontakti_s_tem_priimkom_in_imenom[i]
+            return self.ali_je_prazen(slovar)
+    
