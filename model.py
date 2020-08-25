@@ -31,4 +31,4 @@ class Prijava:
             "update": self.povezave.povezave
         }
         with open(in_file, "w", encoding="utf-8") as vhodna: #json
-            json.dump(slovar_stanja, in_file, ensure_ascii=False, indent=4)
+            json.dump(slovar, in_file, ensure_ascii=False, indent=4)
