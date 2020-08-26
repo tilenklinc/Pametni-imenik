@@ -6,22 +6,24 @@ import hashlib
 uporabniki = {}
 skrivnost = 'Secret'
 
-
+#iz direktorija uporabniki izbere ustrezno datoteko
 for file_name in os.listdir('uporabniki'):
     user = User.updateUser(os.path.join('uporabniki', file_name))
     uporabniki[user.username] = user
 
-def trenutni_uporabnik():
+# dobimo razred User, ki vsebuje name in passwd
+def current_user():
     username = bottle.request.get_cookie('username', secret=skrivnost)
-    return uporabniki[username] # dobimo razred user, ki vsebuje name in passwd in (na začetku prazen) Contact()
+    return uporabniki[username] 
 
 def imenik_uporabnika():
-    return trenutni_uporabnik().contacts # dobimo razred Contact, ki lahko že vsebuje podatke
+    return current_user().contacts
 
-def shrani_trenutnega_uporabnika():
-    user = trenutni_uporabnik()
+def save_current_user():
+    user = current_user()
     user.saveUser(os.path.join('uporabniki', f'{user.username}.json'))
 
+# oblika login in register page-a
 @bottle.get('/')
 def zacetna_stran():
     bottle.redirect('/prijava/')
@@ -70,10 +72,11 @@ def registracija_post():
     bottle.response.set_cookie('username', user.username, path='/', secret=skrivnost)
     bottle.redirect('/imenik/')
 
+# oblika vseh podstrani
 @bottle.get('/imenik/')
 def nacrtovanje_imenika():
     slovar_podatkov = imenik_uporabnika().data
-    shrani_trenutnega_uporabnika()
+    save_current_user()
     return bottle.template('imenik.html',imenik=slovar_podatkov)
 
 @bottle.get("/poglej-imenik/")
@@ -83,7 +86,7 @@ def imenik():
 
 @bottle.post('/odjava/')
 def odjava():
-    shrani_trenutnega_uporabnika()
+    save_current_user()
     bottle.response.delete_cookie('username', path='/')
     bottle.redirect('/')
 
@@ -101,7 +104,7 @@ def addContact():
     location = bottle.request.forms.getunicode('location')
     imenik_uporabnika().addContact(surname, name, number, mail, birthday, location)
     imenik_uporabnika().sortIndeces()
-    shrani_trenutnega_uporabnika()
+    save_current_user()
     bottle.redirect('/imenik/')
 
 @bottle.post('/izbrisi-kontakt<indeks>/')
@@ -113,7 +116,7 @@ def deleteContact(indeks):
 @bottle.get('/uredi-kontakt<indeks>/')
 def editContact(indeks):
     slovar_podatkov = imenik_uporabnika().data
-    shrani_trenutnega_uporabnika()
+    save_current_user()
     return bottle.template('uredi_kontakt.html', imenik=slovar_podatkov, indeks=indeks)
 
 @bottle.post('/uredi-kontakt<indeks>/')
@@ -126,7 +129,7 @@ def editcontact(indeks):
     location = bottle.request.forms.getunicode('location')
     stevilo = str(indeks)
     imenik_uporabnika().editContact(stevilo, surname, name, number, mail, birthday, location)
-    shrani_trenutnega_uporabnika()
+    save_current_user()
     bottle.redirect('/imenik/')
 
 @bottle.get("/poisci-kontakt/")
@@ -139,7 +142,7 @@ def findContact():
     name = bottle.request.forms.getunicode('iskanje-name')
     number = str(bottle.request.forms.getunicode('iskanje-number'))
     rezultat = imenik_uporabnika().findContact(surname, name, number)
-    return bottle.template('iskanje.html', rezultat=rezultat)  # rezultat je lahko slovar ali pa obvestilo, da kontakta ni
+    return bottle.template('iskanje.html', rezultat=rezultat)
 
 @bottle.post("/uredi-kontakte-po-priimkih/")
 def sortBySurname():

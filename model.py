@@ -12,13 +12,13 @@ class User:
     def __init__(self, username, password, contacts):
         self.username = username
         self.password = password
-        self.contacts = contacts 
+        self.contacts = contacts
     
     def checkPasswd(self, password):
         if self.password != password:
             return WRONG_PASSWORD
     
-    def saveUser(self, file_name): #name datoteke je uporabniško_ime.json
+        def saveUser(self, file_name): 
         data_dictionary = {
             "username": self.username,
             "password": self.password,
@@ -32,10 +32,10 @@ class User:
             data_dictionary = json.load(file)
         username = data_dictionary["username"]
         password = data_dictionary["password"]
-        contacts = Contact(data_dictionary["data"]) # tu mora biti Contact(), če ne dobimo seznam in ne razreda
+        contacts = Contact(data_dictionary["data"])
         return User(username, password, contacts)
 
-
+# definiram nov razred, ki dela s slovarji oziroma kontakti
 class Contact:
     def __init__(self, data=None):
         self.data = {} if data is None else data
@@ -74,7 +74,6 @@ class Contact:
 
     # spreminjanje lastnosti kontaktov
     def editContact(self, indeks, surname, name, number, mail, birthday, location):
-        """Posodobitev podatkov"""
         self.data[indeks]["surname"] = surname
         self.data[indeks]["name"] = name
         self.data[indeks]["number"] = number
