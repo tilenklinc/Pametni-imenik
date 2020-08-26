@@ -1,0 +1,100 @@
+<script>
+function clicked(event){
+  if(!confirm("Ste prepričani, da želite izbrisati izbrani element?")) {
+    event.preventDefault();
+  }
+}
+</script>
+
+% import model
+
+% rebase('base.html', izbrani_zavihek='poglej-imenik')
+
+<style>
+  .dropbtn {
+    background-color: #73B0E1;
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid #73B0E1;
+    border-radius: 5px;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  .dropdown:hover .dropdown-content {display: block;}
+  
+  .dropdown:hover .dropbtn {background-color: #73B0E1;}
+  </style>
+
+  <body>
+   
+  <div class="dropdown">
+    <button class="dropbtn">Razvrsti po:</button>
+    <div class="dropdown-content">
+      <form action="/uredi-kontakte-po-imenih/" method="post">
+        <button style="background-color: #f1f1f1; border-color: #f1f1f1;" type="submit" class="button has-text-link">Imenih</button>
+      </form>
+      <form action="/uredi-kontakte-po-priimkih/" method="post">
+        <button style="background-color: #f1f1f1; border-color: #f1f1f1;" type="submit" class="button has-text-link">Priimkih</button>
+      </form>
+    </div>
+  </div>
+
+  </body>
+
+<table class="table is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th>Ime</th>
+      <th>Priimek</th>
+      <th>Tel. št.</th>
+      <th>E-mail</th>
+      <th>Rojstni dan</th>
+      <th>Kraj</th>
+    </tr>
+  </thead>
+  <tbody>
+    % for indeks in imenik:
+    <tr>
+      <td>{{ imenik[indeks]['name'] }}</td>
+      <td>{{ imenik[indeks]['surname'] }}</td>
+      <td>{{ imenik[indeks]['number'] }}</td>
+      <td>{{ imenik[indeks]['mail'] }}</td>
+      <td>{{ imenik[indeks]['birthday'] }}</td>
+      <td>{{ imenik[indeks]['location'] }}</td>
+      <td>
+        <form action="/izbrisi-kontakt{{ indeks }}/" method="post">
+          <button style="background-color: #73B0E1;" type="submit" onclick="clicked(event)" class="button is-primary">Izbriši</button>
+        </form>
+      </td>
+      <td>
+        <form action="/uredi-kontakt{{ indeks }}/" method="get">
+          <button style="background-color: #73B0E1;" type="submit" class="button is-primary">Uredi</button>
+        </form>
+      </td>
+    </tr>
+    % end
+  </tbody>
+</table>

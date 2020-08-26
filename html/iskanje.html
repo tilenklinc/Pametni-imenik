@@ -1,0 +1,35 @@
+% import model
+
+% rebase('base.html', izbrani_zavihek='poisci-kontakt')
+
+<form action="/poisci-kontakt/" method="post">
+  Ime: <input class="input" type='text' name='iskanje-name'>
+  Priimek: <input class="input" type='text' name='iskanje-surname'>
+  Telefonska številka: <input class="input" type='number' name='iskanje-number'>
+  <hr>
+  <button type="submit" class="button is-outlined is-link">Poišči</button>
+</form>
+<br>
+
+% if rezultat == model.CONTACT_NOT_EXISTING:
+<p>Stik s temi podatki žal ne obstaja. Pojdite nazaj ali poskusite ponovno.</p>
+
+% elif rezultat == model.EMPTY:
+<p>Polje ne sme biti prazno.</p>
+
+% elif rezultat is None:
+<p></p>
+
+% else:
+<p>Število najdenih stikov: {{ len(rezultat) }}</p>
+<br>
+% for i in rezultat:
+<p><i>Ime: </i><b>{{ rezultat[i]['name'] }}</b></p>
+<p><i>Priimek: </i><b>{{ rezultat[i]['surname'] }}</b></p>
+<p><i>Telefonska številka: </i><b>{{ rezultat[i]['number'] }}</b></p>
+<p><i>Email: </i><b>{{ rezultat[i]['mail'] }}</b></p>
+<p><i>Rojstni dan: </i><b>{{ rezultat[i]['birthday'] }}</b></p>
+<p><i>Kraj: </i>{{ rezultat[i]['location'] }}</p>
+<br>
+<br>
+% end

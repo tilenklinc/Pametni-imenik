@@ -1,0 +1,42 @@
+  % import model
+
+  % rebase('base.html')
+  
+  % if obvestilo == model.USERNAME_TAKEN:
+  <section style="height: 83vh; border: 1px solid orange; border-radius: 15px; background-color: orange;" class="hero is-warning is-fullheight">
+  % else:
+    <section class="hero is-success is-fullheight">
+  %end
+    <div style="height: 83vh; border: 1px solid orange; border-radius: 15px; background-color: orange;" class="hero-body">
+      <div class="container has-text-centered">
+        <div style="float: right;" class="column is-4 is-offset-4">
+            <h3 class="title has-text-white">REGISTRACIJA</h3>
+            <hr style="width: 50%; margin-left: 25%;" class="login-hr">
+            % if obvestilo is None:
+            <p></p>
+            %else:
+            <p class="subtitle">{{ obvestilo }}</p>
+            %end
+            <br>
+            <div class="box">
+            <form action="/registracija/" method="post">
+              <div class="field">
+                <div class="control">
+                  <input class="input" type='text' name='username' required placeholder="Uporabniško ime" autofocus="">
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input class="input" type='password' name='passwd' required placeholder="Geslo">
+                </div>
+              </div>            
+              <button type="submit" class="button is-block is-info is-fullwidth">Registriraj se   <i class="fas fa-sign-in-alt" aria-hidden="true"></i></button>
+            </form>  
+            </div> 
+            <p class="has-text-grey">
+              <a style="color: white;" href="/prijava/"><u>Vpiši se</u></a>
+            </p>    
+        </div>
+      </div>
+    </div>
+  </section>

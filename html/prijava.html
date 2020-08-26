@@ -1,0 +1,49 @@
+% import model
+
+% rebase('base.html')
+
+% if obvestilo == model.USERNAME_NOT_EXISTING:
+<section style="height: 83vh; border: 1px solid orange; border-radius: 15px; background-color: orange;" class="hero is-warning is-fullheight">
+% elif obvestilo == model.WRONG_PASSWORD:
+<section style="height: 83vh; border: 1px solid pink; border-radius: 15px; background-color: pink;" class="hero is-danger is-fullheight">
+% else:
+  <section style="height: 83vh; border: 1px solid #84E9EC; border-radius: 15px; background-color: #84E9EC;">
+%end
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div style="float: right;" class="column is-4 is-offset-4">
+          <h3 class="title has-text-white">VPIS</h3>
+          <hr style="width: 50%; margin-left: 25%";>
+        
+          % if obvestilo is None:
+          <p></p>
+          %else:
+          <p class="subtitle">{{ obvestilo }}</p>
+          %end
+          <br>
+          <div class="box">
+          <form action="/prijava/" method="post">
+            <div class="field">
+              <div class="control">
+                <input class="input is-rounded" type='text' name='username' required placeholder="Uporabnisko ime" autofocus="">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input class="input is-rounded" type='password' name='passwd' required placeholder="Geslo">
+              </div>
+            </div>            
+            <button type="submit" class="button is-block is-info is-fullwidth">Vpiši se   <i class="fas fa-sign-in-alt" aria-hidden="true"></i></button>
+          </form>  
+          </div>
+          <p class="has-text-grey">
+            <a style="font-size: 20px; " href="/registracija/">Registriraj se</a>
+          </p>
+          
+          <h3>Tilen Klinc © 2020 </h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+

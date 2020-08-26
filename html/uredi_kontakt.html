@@ -1,0 +1,41 @@
+% import model
+
+% rebase('base.html')
+
+<div class="container has-text-centered">
+  <div class="column is-4 is-offset-4">
+    <form action="/uredi-kontakt{{ indeks }}/" method="post">
+      <div class="field">
+        <div class="control">
+          Ime<input class="input" type='text' name='name' value="{{ imenik[indeks]['name'] }}" autofocus="">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          Priimek<input class="input" type='text' name='surname' value="{{ imenik[indeks]['surname'] }}">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          Telefonska številka<input class="input" type='number' name='number' value="{{ imenik[indeks]['number'] }}" required>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          Email<input class="input" type='email' name='mail' value="{{ imenik[indeks]['mail'] }}">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          Rojstni dan<input class="input" type='date' name='birthday' value="{{ imenik[indeks]['birthday'] }}">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          Kraj<input class="input" type='text' name='location' value="{{ imenik[indeks]['location'] }}">
+        </div>
+      </div>
+      <button type="submit" class="button is-link is-outlined">Potrdi</button>
+    </form>
+  </div>
+</div>
