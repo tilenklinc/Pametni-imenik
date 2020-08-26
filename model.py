@@ -8,7 +8,7 @@ USERNAME_NOT_EXISTING = "Uporabniško ime ne obstaja. Prosim, poskusite ponovno"
 USERNAME_TAKEN = "To uporabniško ime že obstaja. Prosim, poskusite ponovno."
 
 # Definiram nov razred za prijavo in metode za preverjanje gesla
-class user:
+class User:
     def __init__(self, username, password, contacts):
         self.username = username
         self.password = password
@@ -33,7 +33,7 @@ class user:
         username = data_dictionary["username"]
         password = data_dictionary["password"]
         contacts = Contact(data_dictionary["data"]) # tu mora biti Contact(), če ne dobimo seznam in ne razreda
-        return user(username, password, contacts)
+        return User(username, password, contacts)
 
 
 class Contact:

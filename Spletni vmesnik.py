@@ -1,5 +1,5 @@
 import bottle
-from model import user, Contact, WRONG_PASSWORD, USERNAME_NOT_EXISTING, USERNAME_TAKEN
+from model import User, Contact, WRONG_PASSWORD, USERNAME_NOT_EXISTING, USERNAME_TAKEN
 import os
 import hashlib
 
@@ -8,7 +8,7 @@ skrivnost = 'Secret'
 
 
 for file_name in os.listdir('uporabniki'):
-    user = user.updateUser(os.path.join('uporabniki', file_name))
+    user = User.updateUser(os.path.join('uporabniki', file_name))
     uporabniki[user.username] = user
 
 def trenutni_uporabnik():
@@ -61,7 +61,7 @@ def registracija_post():
     h = hashlib.blake2b()
     h.update(passwd.encode(encoding='utf-8'))
     password = h.hexdigest()
-    user = user(
+    user = User(
         username,
         password,
         Contact()
