@@ -13,7 +13,7 @@ for file_name in os.listdir('uporabniki'):
 
 def trenutni_uporabnik():
     username = bottle.request.get_cookie('username', secret=skrivnost)
-    return uporabniki[username] # dobimo razred user, ki vsebuje name in passwd in (na začetku prazen) Contact()
+    return uporabniki[username] # dobimo razred User, ki vsebuje name in passwd in (na začetku prazen) Contact()
 
 def imenik_uporabnika():
     return trenutni_uporabnik().contacts # dobimo razred Contact, ki lahko že vsebuje podatke
