@@ -1,16 +1,18 @@
 import json
 
-CONTACT_NOT_EXISTING = "N"
+# Definiram konstante
+CONTACT_NOT_EXISTING = "Ni stikov"
 EMPTY = "To polje ne sme biti prazno"
 WRONG_PASSWORD = "Vpisano geslo je napačno. Prosim, poskusite ponovno"
-USERNAME_NOT_EXISTING = "Uporabniško name ne obstaja. Prosim, poskusite ponovno"
+USERNAME_NOT_EXISTING = "Uporabniško ime ne obstaja. Prosim, poskusite ponovno"
 USERNAME_TAKEN = "To uporabniško ime že obstaja. Prosim, poskusite ponovno."
 
+# Definiram nov razred za prijavo in metode za preverjanje gesla
 class user:
     def __init__(self, username, password, contacts):
         self.username = username
         self.password = password
-        self.contacts = contacts # to je razred Contact()
+        self.contacts = contacts 
     
     def checkPasswd(self, password):
         if self.password != password:
@@ -43,7 +45,7 @@ class Contact:
             return 1
         else:
             sum = 0
-            for slovar in self.data:
+            for dictionary in self.data:
                 sum += 1
             indeks = sum + 1
             return str(indeks)
@@ -58,8 +60,8 @@ class Contact:
             "location": location
         }
 
+    # razporedi indekse po naraščujočem vrstnem redu
     def sortIndeces(self):
-        """Uredi indekse po vrsti od 1 do dolžine slovarja"""
         if self.data == {}:
             pass
         else:
@@ -70,6 +72,7 @@ class Contact:
                 self.data.pop(index_list[n - 1])
                 self.data[str(n)] = contact
 
+    # spreminjanje lastnosti kontaktov
     def editContact(self, indeks, surname, name, number, mail, birthday, location):
         """Posodobitev podatkov"""
         self.data[indeks]["surname"] = surname
@@ -79,26 +82,27 @@ class Contact:
         self.data[indeks]["birthday"] = birthday
         self.data[indeks]["location"] = location
 
+    # izbriše stik
     def deleteContact(self, indeks):
         self.data.pop(indeks)
-
+        
+    # razvrsti po abecednem vrstnem redu priimkov
     def sortBySurname(self):
-        """Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so priimki urejeni po abecedi"""
         if self.data == {}:
             pass
-        pair_list = [] # seznam parov [("novak", 1), ("lokar", 2), ("", 3), ("48", 4)]
+        pair_list = []
         for i in self.data:
             surname = self.data[i]["surname"]
             pair_list.append((surname.upper(), i))
-        pairs = sorted(pair_list) # seznam uredimo po abecedi [("", 3), ("48", 4), ("lokar", 2), ("novak", 1)]
-        slovar = {}
+        pairs = sorted(pair_list) 
+        dictionary = {}
         for  n, (surname, indeks) in enumerate(pairs):
-            slovar[str(n + 1)] = self.data[indeks]
+            dictionary[str(n + 1)] = self.data[indeks]
             self.data.pop(indeks)
-        self.data = slovar
-        
+        self.data = dictionary
+
+    # razvrsti po abecednem vrstnem redu imen    
     def sortByName(self):
-        """Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so imena urejena po abecedi"""
         if self.data == {}:
             pass
         pair_list = []
@@ -112,17 +116,18 @@ class Contact:
             self.data.pop(indeks)
         self.data = dictionary
 
+    # seznami števil, priimkov in imen
     def getNumber(self):
         return [self.data[i]["number"] for i in self.data.keys()]
-
-    def getSurname(self):
-        return [self.data[i]["surname"] for i in self.data.keys()]
 
     def getName(self):
         return [self.data[i]["name"] for i in self.data.keys()]
 
+    def getSurname(self):
+        return [self.data[i]["surname"] for i in self.data.keys()]
+
+    # poišče vse s takim priimkom
     def surnames(self, surname):
-        """Vrne slovar vseh kontaktov, ki imajo tak surname"""
         if surname == "":
             return self.data
         else:
@@ -132,8 +137,8 @@ class Contact:
                     dictionary[i] = self.data[i]
             return dictionary
 
+    # poišče oziroma vrne seznam vseh stikov s tem imenom
     def names(self, name, dictionary):
-        """Vrne slovar vseh kontaktov, ki imajo tako name (in surname od prej)"""
         if name == "":
             return dictionary
         else:
@@ -143,14 +148,15 @@ class Contact:
                     dictionary2[i] = dictionary[i]
             return dictionary2
 
-    def isEmpty(self, slovar):
+    # če je prazen vrne error_msg, sicer slovar
+    def isEmpty(self, dictionary):
         if dictionary == {}:
             return CONTACT_NOT_EXISTING
         else:
             return dictionary
 
+    # poišče in vrne seznam z danimi lastnostmi
     def findContact(self, surname, name, number):
-        """Poisce slovar z vsemi contacts, ki ustrezajo danim argumentom"""
         if surname + name + number == "":
             return EMPTY
         name = name.upper()
