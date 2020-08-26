@@ -1,197 +1,167 @@
 import json
 
-# Definiram konstante za prijavo
-WRONG_USERNAME = "Vpisano uporabniško ime ne obstaja. Prosim, poskusite ponovno."
-USER_TAKEN = "To uporabniško ime je že v uporabi. Prosim, poskusite ponovno."
-WRONG_PASS = "Vpisano geslo ni pravilno. Prosim, poskusite ponovno."
+CONTACT_NOT_EXISTING = "N"
+EMPTY = "To polje ne sme biti prazno"
+WRONG_PASSWORD = "Vpisano geslo je napačno. Prosim, poskusite ponovno"
+USERNAME_NOT_EXISTING = "Uporabniško name ne obstaja. Prosim, poskusite ponovno"
+USERNAME_TAKEN = "To uporabniško ime že obstaja. Prosim, poskusite ponovno."
 
-# Ostale konstante
-MULTIPLE = "M"
-NO_CONTACT = "N"
-EMPTY = "Polje ne sme biti prazno."
-
-######################################################################################
-# Slovar katerega ključi (keys) so nadpomenke našim podatkom, vrednosti pa so podatki.
-# Prilagam primer:
-#
-# {
-# "69":
-#     {
-#         "priimek": "KLINC",
-#         "ime": "TILEN",
-#         "številka": "987654321",
-#         "elektronski naslov": "tilen.cinc@gmail.com",
-#         "rojstni dan": "14. 1. 2004",
-#         "kraj": "Ljubljana"
-#     }
-# }
-######################################################################################
-
-# Definiram razred "Prijava", ki shranjuje uporabniška imena in gesla
-# Preverim ustreznost gesla, si zapomnim stanje
-# Povezave kasneje dopolnim z razredom "Povezava()"
-
-class Prijava:
-
-    def __init__(self, username, password, povezave):
+class user:
+    def __init__(self, username, password, contacts):
         self.username = username
         self.password = password
-        self.povezave = povezave
-
-    def preveri_password(self, password):
+        self.contacts = contacts # to je razred Contact()
+    
+    def checkPasswd(self, password):
         if self.password != password:
-            return WRONG_PASS
-
-    def save_state(self, file_name):
-        slovar = {
+            return WRONG_PASSWORD
+    
+    def saveUser(self, file_name): #name datoteke je uporabniško_ime.json
+        data_dictionary = {
             "username": self.username,
             "password": self.password,
-            "data": self.povezave.data
+            "data": self.contacts.data
         }
-        with open(file_name, "w", encoding="utf-8") as vhodna: #json
-            json.dump(slovar, vhodna, ensure_ascii=False, indent=4)
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(data_dictionary, file, ensure_ascii=False, indent=4)
 
-    def get_state(file_name):
-        with open(file_name, "r", encoding="utf-8") as vhodna:
-            slovar = json.load(vhodna)
-        username = slovar["username"]
-        password = slovar["password"]
-        povezave = Povezava(slovar["data"])
-        return Prijava(username, password, povezave)
+    def updateUser(file_name):
+        with open(file_name, encoding="utf-8") as file:
+            data_dictionary = json.load(file)
+        username = data_dictionary["username"]
+        password = data_dictionary["password"]
+        contacts = Contact(data_dictionary["data"]) # tu mora biti Contact(), če ne dobimo seznam in ne razreda
+        return user(username, password, contacts)
 
-# Definiram nov razred v katerega dodam metode za delo s stiki
 
-class Povezava:
-
+class Contact:
     def __init__(self, data=None):
         self.data = {} if data is None else data
 
-    def index(self):
+    def new__indeks(self):
         if self.data == {}:
             return 1
         else:
             sum = 0
             for slovar in self.data:
                 sum += 1
-            index = sum + 1
-            return str(index)
+            indeks = sum + 1
+            return str(indeks)
 
-    def add_new(self, priimek, ime, stevilka, email, rojstni, kraj):
-        self.data[self.index()] = {
-            "priimek": priimek,
-            "ime": ime,
-            "stevilka": stevilka,
-            "email": email,
-            "rojstni": rojstni,
-            "kraj": kraj
+    def addContact(self, surname, name, number, mail, birthday, location):
+        self.data[self.new__indeks()] = {
+            "surname": surname,
+            "name": name,
+            "number": number,
+            "mail": mail,
+            "birthday": birthday,
+            "location": location
         }
 
-    def sort_index(self):
+    def sortIndeces(self):
+        """Uredi indekse po vrsti od 1 do dolžine slovarja"""
         if self.data == {}:
             pass
         else:
-            new_dict = {}
-            index_dict = [key for key in self.data]
-            for n in range (1, len(index_dict) + 1):
-                povezava = self.data[index_dict[n - 1]]
-                self.data.pop(index_dict[n - 1])
-                self.data[str(n)] = povezava
+            new_dictionary = {}
+            index_list = [key for key in self.data]
+            for n in range(1, len(index_list) + 1):
+                contact = self.data[index_list[n - 1]]
+                self.data.pop(index_list[n - 1])
+                self.data[str(n)] = contact
 
+    def editContact(self, indeks, surname, name, number, mail, birthday, location):
+        """Posodobitev podatkov"""
+        self.data[indeks]["surname"] = surname
+        self.data[indeks]["name"] = name
+        self.data[indeks]["number"] = number
+        self.data[indeks]["mail"] = mail
+        self.data[indeks]["birthday"] = birthday
+        self.data[indeks]["location"] = location
 
-    def sort_povezava(self, index, priimek, ime, stevilka, email, rojstni, kraj):
-        self.data[index]["priimek"] = priimek
-        self.data[index]['ime'] = ime
-        self.data[index]['stevilka'] = stevilka
-        self.data[index]['email'] = email
-        self.data[index]['rojstni'] = rojstni
-        self.data[index]['kraj'] = kraj
+    def deleteContact(self, indeks):
+        self.data.pop(indeks)
 
-    # Brisanje kontakta
-    
-    def del_contact(self, index):
-        self.data.pop(index)
-    
-    def sort_priimki(self):
-        '''Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so priimki urejeni po abecedi'''
+    def sortBySurname(self):
+        """Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so priimki urejeni po abecedi"""
         if self.data == {}:
             pass
-        seznam_parov = [] # seznam parov [('novak', 1), ('lokar', 2), ('', 3), ('48', 4)]
+        pair_list = [] # seznam parov [("novak", 1), ("lokar", 2), ("", 3), ("48", 4)]
         for i in self.data:
-            priimek = self.data[i]['priimek']
-            seznam_parov.append((priimek.upper(), i))
-        pari = sorted(seznam_parov) # seznam uredimo po abecedi [('', 3), ('48', 4), ('lokar', 2), ('novak', 1)]
+            surname = self.data[i]["surname"]
+            pair_list.append((surname.upper(), i))
+        pairs = sorted(pair_list) # seznam uredimo po abecedi [("", 3), ("48", 4), ("lokar", 2), ("novak", 1)]
         slovar = {}
-        for  n, (priimek, index) in enumerate(pari):
-            slovar[str(n + 1)] = self.data[index]
-            self.data.pop(index)
+        for  n, (surname, indeks) in enumerate(pairs):
+            slovar[str(n + 1)] = self.data[indeks]
+            self.data.pop(indeks)
         self.data = slovar
-
-    def sort_ime(self):
-        '''Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so imena urejena po abecedi'''
+        
+    def sortByName(self):
+        """Slovar kontaktov uredi tako, da si vrednosti ključev sledijo od 1 do n, pri čemer so imena urejena po abecedi"""
         if self.data == {}:
             pass
-        seznam_parov = []
+        pair_list = []
         for i in self.data:
-            ime = self.data[i]['ime']
-            seznam_parov.append((ime.upper(), i))
-        pari = sorted(seznam_parov)
-        slovar = {}
-        for  n, (ime, index) in enumerate(pari):
-            slovar[str(n + 1)] = self.data[index]
-            self.data.pop(index)
-        self.data = slovar
+            name = self.data[i]["name"]
+            pair_list.append((name.upper(), i))
+        pairs = sorted(pair_list)
+        dictionary = {}
+        for  n, (name, indeks) in enumerate(pairs):
+            dictionary[str(n + 1)] = self.data[indeks]
+            self.data.pop(indeks)
+        self.data = dictionary
 
-    def stevilke_imenik(self):
-        return [self.data[i]['stevilka'] for i in self.data.keys()]
+    def getNumber(self):
+        return [self.data[i]["number"] for i in self.data.keys()]
 
-    def priimki_imenik(self):
-        return [self.data[i]['priimek'] for i in self.data.keys()]
+    def getSurname(self):
+        return [self.data[i]["surname"] for i in self.data.keys()]
 
-    def imena_imenik(self):
-        return [self.data[i]['ime'] for i in self.data.keys()]
-    
-    def kontakti_priimek(self, priimek):
-        '''Vrne slovar vseh kontaktov, ki imajo tak priimek'''
-        if priimek == '':
+    def getName(self):
+        return [self.data[i]["name"] for i in self.data.keys()]
+
+    def surnames(self, surname):
+        """Vrne slovar vseh kontaktov, ki imajo tak surname"""
+        if surname == "":
             return self.data
         else:
-            slovar = {}
+            dictionary = {}
             for i in self.data:
-                if self.data[i]['priimek'].upper() == priimek:
-                    slovar[i] = self.data[i]
-            return slovar
+                if self.data[i]["surname"].upper() == surname:
+                    dictionary[i] = self.data[i]
+            return dictionary
 
-    def kontakti_ime(self, ime, slovar):
-        '''Vrne slovar vseh kontaktov, ki imajo tako ime (in priimek od prej)'''
-        if ime == '':
-            return slovar
+    def names(self, name, dictionary):
+        """Vrne slovar vseh kontaktov, ki imajo tako name (in surname od prej)"""
+        if name == "":
+            return dictionary
         else:
-            slovar2 = {}
-            for i in slovar:
-                if slovar[i]['ime'].upper() == ime:
-                    slovar2[i] = slovar[i]
-            return slovar2
-    
-    def ali_je_prazen(self, slovar):
-        if slovar == {}:
-            return NO_CONTACT
-        else:
-            return slovar
+            dictionary2 = {}
+            for i in dictionary:
+                if dictionary[i]["name"].upper() == name:
+                    dictionary2[i] = dictionary[i]
+            return dictionary2
 
-    def poisci_kontakt(self, priimek, ime, stevilka):
-        '''Poisce slovar z vsemi kontakti, ki ustrezajo danim argumentom'''
-        if priimek + ime + stevilka == '':
+    def isEmpty(self, slovar):
+        if dictionary == {}:
+            return CONTACT_NOT_EXISTING
+        else:
+            return dictionary
+
+    def findContact(self, surname, name, number):
+        """Poisce slovar z vsemi contacts, ki ustrezajo danim argumentom"""
+        if surname + name + number == "":
             return EMPTY
-        ime = ime.upper()
-        priimek = priimek.upper()
-        kontakti_s_tem_priimkom = self.kontakti_priimek(priimek)
-        kontakti_s_tem_priimkom_in_imenom = self.kontakti_ime(ime, kontakti_s_tem_priimkom)
-        if stevilka == '':
-            return self.ali_je_prazen(kontakti_s_tem_priimkom_in_imenom)
+        name = name.upper()
+        surname = surname.upper()
+        contacts_including_surname = self.surnames(surname)
+        contacts_including_name_surname = self.names(name, contacts_including_surname)
+        if number == "":
+            return self.isEmpty(contacts_including_name_surname)
         else:
             slovar = {}
-            for i in kontakti_s_tem_priimkom_in_imenom:
-                if kontakti_s_tem_priimkom_in_imenom[i]['stevilka'] == stevilka:
-                    slovar[i] = kontakti_s_tem_priimkom_in_imenom[i]
-            return self.ali_je_prazen(slovar)
-    
+            for i in contacts_including_name_surname:
+                if contacts_including_name_surname[i]["number"] == number:
+                    slovar[i] = contacts_including_name_surname[i]
+            return self.isEmpty(slovar)
