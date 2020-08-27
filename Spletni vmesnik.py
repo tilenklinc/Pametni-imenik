@@ -79,6 +79,10 @@ def nacrtovanje_imenika():
     save_current_user()
     return bottle.template('imenik.html',imenik=slovar_podatkov)
 
+@bottle.get('/profile_card/')
+def profileCard():
+    return bottle.template("profile_card.html")
+
 @bottle.get("/poglej-imenik/")
 def imenik():
     slovar_podatkov = imenik_uporabnika().data
@@ -132,6 +136,8 @@ def editcontact(indeks):
     save_current_user()
     bottle.redirect('/imenik/')
 
+#@bottle.get("/profil/")
+
 @bottle.get("/poisci-kontakt/")
 def findContact():
     return bottle.template('iskanje.html', rezultat=None)
@@ -153,5 +159,6 @@ def sortBySurname():
 def sortByName():
     imenik_uporabnika().sortByName()
     bottle.redirect('/imenik/')
+    
 
 bottle.run(debug=True, reloader=True)

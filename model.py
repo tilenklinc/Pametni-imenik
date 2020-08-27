@@ -18,7 +18,7 @@ class User:
         if self.password != password:
             return WRONG_PASSWORD
     
-        def saveUser(self, file_name): 
+    def saveUser(self, file_name): 
         data_dictionary = {
             "username": self.username,
             "password": self.password,
@@ -74,6 +74,7 @@ class Contact:
 
     # spreminjanje lastnosti kontaktov
     def editContact(self, indeks, surname, name, number, mail, birthday, location):
+        
         self.data[indeks]["surname"] = surname
         self.data[indeks]["name"] = name
         self.data[indeks]["number"] = number
