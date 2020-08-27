@@ -94,6 +94,14 @@ def odjava():
     bottle.response.delete_cookie('username', path='/')
     bottle.redirect('/')
 
+@bottle.get('/profile_card_uredi/')
+def profileCardUredi():
+    return bottle.template("profile_card_uredi.html")
+
+@bottle.get('/profile_card/')
+def profileCard():
+    return bottle.template("profile_card.html")
+
 @bottle.get("/dodaj-kontakt/")
 def addContact():
     return bottle.template("dodaj-kontakt.html")

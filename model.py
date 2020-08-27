@@ -35,6 +35,24 @@ class User:
         contacts = Contact(data_dictionary["data"])
         return User(username, password, contacts)
 
+class Personal:
+    def personalData(self, personal_name, personal_surname, personal_mail, personal_number):
+        self.personal_name = personal_name
+        self.personal_surname = personal_surname
+        self.personal_mail = personal_mail
+        self.personal_number = personal_number
+
+    def savePersonalData(self, file_name): #name datoteke je uporabniško_ime.json
+        data_dictionary = {
+            "personal_name": self.personal_name,
+            "personal_surname": self.personal_surname,
+            "personal_email": self.personal_email,
+            "personal_number": self.personal_number
+        }
+        with open(file_name, "w", encoding="utf-8") as file:
+            json.dump(data_dictionary, file, indent=4)
+
+
 # definiram nov razred, ki dela s slovarji oziroma kontakti
 class Contact:
     def __init__(self, data=None):
