@@ -35,6 +35,7 @@ class User:
         contacts = Contact(data_dictionary["data"])
         return User(username, password, contacts)
 
+# Poskusil dodati nov file, ki shrani podatke osebnega stika. Pri tem bi še omogočil dodajanje slike z JS-om.
 class Personal:
     def personalData(self, personal_name, personal_surname, personal_mail, personal_number):
         self.personal_name = personal_name
